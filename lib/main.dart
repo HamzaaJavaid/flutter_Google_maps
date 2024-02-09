@@ -48,6 +48,16 @@ class _MyHomePageState extends State<MyHomePage> {
     zoom: 14.4746,
   );
 
+  List<Marker> markers = [
+    Marker(
+      markerId: MarkerId('1'),
+    position:  LatLng(37.42796133580664, -122.085749655962),
+    infoWindow: InfoWindow(title: "Your Location .."),
+
+    )
+  ];
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -62,16 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         zoomControlsEnabled: true,
         compassEnabled: true,
         mapType: MapType.normal,
-        markers: Set.of([
-          Marker(
-            markerId: MarkerId('1',),
-            position: LatLng(37.42796133580664, -122.085749655962),
-            infoWindow: InfoWindow(
-              title: "Hamza Future Location"
-            )
-          ),
-
-        ]),
+        markers: Set.of(markers),
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (controller){
           googleMapController.complete(controller);
