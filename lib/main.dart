@@ -47,10 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   LatLng latlng = LatLng(34.120155, 72.470154);
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(34.120155, 72.470154),
-    zoom: 14.4746,
-  );
+    late CameraPosition  _kGooglePlex ;
 
   List<Marker> markers = [
   ];
@@ -89,10 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
 
-    return await Geolocator.getCurrentPosition();
+    return await getLocation();
   }
 
   Future getLocation()async{
+
+
 
 
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -100,73 +99,97 @@ class _MyHomePageState extends State<MyHomePage> {
     print("Longitude :- ${position.longitude}");
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     print('---');
-    print(placemarks[0].subLocality);
+    print(placemarks);
+    print(placemarks[0].name);
     setState(() {
+      _kGooglePlex = CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 13.4746,
+      );
 
       markers.add(
-          Marker(markerId: MarkerId('1'),position: LatLng(position.latitude,position.longitude),infoWindow: InfoWindow(title: placemarks[0].subLocality))
+          Marker(markerId: MarkerId('1'),position: LatLng(position.latitude,position.longitude),infoWindow: InfoWindow(title: "Islamabad B-17 ${placemarks[0].name}"))
       );
+      print('Done');
     });
   }
+
+
+  //33.685504,72.8399872
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _determinePosition();
-    getLocation();
+   // getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+   try{
+     return Scaffold(
 
-      appBar: AppBar(
+       appBar: AppBar(
 
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
 
-        title: Text(widget.title),
-      ),
-        body: SafeArea(
-          child: GoogleMap(
-            zoomControlsEnabled: true,
-            compassEnabled: true,
-            mapType: MapType.normal,
-            markers: Set.of(markers),
-            myLocationEnabled: true,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (controller){
-              googleMapController.complete(controller);
-            },
-            onTap: (LatLng){
-
-
-          
-            },
-          
-          ),
-        ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.location_disabled),
-        onPressed: ()async{
-
-
-          print(markers[0].position);
-          GoogleMapController MapController = await googleMapController.future;
-          MapController.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(target: markers[0].position , zoom: 14.4746)
-            )
-            );
+         title: Text(widget.title),
+       ),
+       body: SafeArea(
+         child: GoogleMap(
+           zoomControlsEnabled: true,
+           compassEnabled: true,
+           mapType: MapType.normal,
+           markers: Set.of(markers),
+           myLocationEnabled: true,
+           initialCameraPosition: _kGooglePlex,
+           onMapCreated: (controller){
+             googleMapController.complete(controller);
+           },
+           onTap: (LatLng){
 
 
 
+           },
+
+         ),
+       ),
+       floatingActionButton: FloatingActionButton(
+         child: Icon(Icons.location_disabled),
+         onPressed: ()async{
 
 
-        },
-      ),
+           print(markers[0].position);
+           GoogleMapController MapController = await googleMapController.future;
+           MapController.animateCamera(
+               CameraUpdate.newCameraPosition(
+                   CameraPosition(target: markers[0].position , zoom: 14.4746)
+               )
+           );
 
-    );
+
+
+
+
+         },
+       ),
+
+     );
+   }
+       catch(e){
+     return Scaffold(
+       appBar: AppBar(
+
+         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+         title: Text(widget.title),
+       ),
+       body: Center(
+         child: CircularProgressIndicator(),
+       ),
+     );
+       }
   }
 }
