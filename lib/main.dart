@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart';
+
+import 'package:mapsflutter/custom%20info%20window.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +25,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Flutter Google Map'),
+      //home: const MyHomePage(title: 'Flutter Google Map'),
+      home: InfoWindowCustom(),
     );
   }
 }
